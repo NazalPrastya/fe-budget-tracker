@@ -42,12 +42,11 @@ const AuthPage = () => {
           setErrors({ terms: "Please accept terms and conditions" });
           return;
         }
+        response = await register({
+          ...formData,
+          number: `+62${formData.number}`,
+        });
       }
-
-      response = await register({
-        ...formData,
-        number: `+62${formData.number}`,
-      });
 
       const token = response.data.token;
       localStorage.setItem("token", token);
@@ -230,7 +229,7 @@ const AuthPage = () => {
               <p className="text-center text-sm text-gray-600">
                 {isLogin ? (
                   <>
-                    Don't have an account?{" "}
+                    Dont have an account?{" "}
                     <button
                       type="submit"
                       onClick={() => setType("register")}
