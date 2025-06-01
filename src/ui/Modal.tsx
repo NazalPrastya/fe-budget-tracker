@@ -15,7 +15,12 @@ const iconMap: Record<string, ReactNode> = {
   danger: <AiOutlineCloseCircle className="text-red-500 w-6 h-6" />,
 };
 
-export default function Modal({ message, type = "information", onOk, onCancel }: ModalProps) {
+export default function Modal({
+  message,
+  type = "information",
+  onOk,
+  onCancel,
+}: ModalProps) {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30">
       <div className="bg-white w-full max-w-sm mx-auto rounded-lg shadow-lg p-6">
@@ -36,12 +41,11 @@ export default function Modal({ message, type = "information", onOk, onCancel }:
             </button>
           )}
           <button
-            onClick={onOk || (() => {})} 
+            onClick={onOk || (() => {})}
             className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
           >
             OK
           </button>
-
         </div>
       </div>
     </div>,
