@@ -47,10 +47,26 @@ const Sidebar = () => {
   if (!pathname) return null;
 
   const navItems = [
-    { href: "/dashboard", icon: <AiOutlineAppstore className="size-5 opacity-75" />, label: "Dashboard" },
-    { href: "/dashboard/transaction", icon: <AiOutlineSwap className="size-5 opacity-75" />, label: "Transaction" },
-    { href: "/dashboard/summary", icon: <AiOutlineSolution className="size-5 opacity-75" />, label: "Summary" },
-    { href: "/dashboard/profile", icon: <AiOutlineUser className="size-5 opacity-75" />, label: "Profile" },
+    {
+      href: "/dashboard",
+      icon: <AiOutlineAppstore className="size-5 opacity-75" />,
+      label: "Dashboard",
+    },
+    {
+      href: "/dashboard/transaction",
+      icon: <AiOutlineSwap className="size-5 opacity-75" />,
+      label: "Transaction",
+    },
+    {
+      href: "/dashboard/summary",
+      icon: <AiOutlineSolution className="size-5 opacity-75" />,
+      label: "Summary",
+    },
+    {
+      href: "/dashboard/profile",
+      icon: <AiOutlineUser className="size-5 opacity-75" />,
+      label: "Profile",
+    },
   ];
 
   return (
