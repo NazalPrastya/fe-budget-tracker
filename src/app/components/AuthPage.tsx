@@ -6,6 +6,7 @@ import { login, register } from "@/services/auth";
 import { DollarSign, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Modal from "@/ui/Modal";
+import { CiWarning } from "react-icons/ci";
 
 const AuthPage = () => {
   const [type, setType] = useState<"login" | "register">("login");
@@ -85,6 +86,18 @@ const AuthPage = () => {
                 {isLogin ? "sign in" : "sign up"}
               </p>
             </div>
+            {errors.general && (
+              <div
+                role="alert"
+                className="border-s-4 border-red-700 bg-red-50 p-4"
+              >
+                <div className="flex items-center gap-2 text-red-700">
+                  <CiWarning className="w-5 h-5" />
+
+                  <strong className="font-medium">{errors.general}</strong>
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
@@ -189,7 +202,6 @@ const AuthPage = () => {
                   </button>
                 </div>
               </div>
-              {errors && <p className="text-red-500">{errors.general}</p>}
               {!isLogin && (
                 <div className="flex itemx-center">
                   <input
