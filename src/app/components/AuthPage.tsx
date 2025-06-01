@@ -1,14 +1,67 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DollarSign, Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { login, register } from "@/service/auth";
+import Modal from "@/ui/Modal";
 
 const AuthPage = () => {
-  const [type, setType] = useState<"login" | "register">("register");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [type, setType] = useState<"login" | "register">("login");
+  const [showPassword, setShowPassword] = useState(false);
+  const termsCheckBoxRef = useRef<HTMLInputElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    number: "",
+    email: "",
+    password: "",
+  });
+
   const isLogin = type === "login";
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+    setLoading(true);
+
+    try {
+      let response;
+
+      if (isLogin) {
+        response = await login({
+          email: formData.email,
+          password: formData.password,
+        });
+      } else {
+        if (!termsCheckBoxRef.current?.checked) {
+          setErrors({ terms: "Please accept terms and conditions" });
+          return;
+        }
+      }
+
+      response = await register({
+        ...formData,
+        number: `+62${formData.number}`,
+      });
+
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      router.push("/dashboard");
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrors({ general: error.message });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log(errors);
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="flex items-center justify-center p-8 bg-white">
@@ -34,7 +87,7 @@ const AuthPage = () => {
               </p>
             </div>
 
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -45,6 +98,10 @@ const AuthPage = () => {
                       Full Name
                     </label>
                     <input
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       id="name"
                       type="text"
                       placeholder="John Doe"
@@ -64,6 +121,13 @@ const AuthPage = () => {
                         +62
                       </div>
                       <input
+                        value={formData.number}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            number: e.target.value,
+                          })
+                        }
                         id="phoneNumber"
                         type="text"
                         placeholder="8xxx"
@@ -82,6 +146,10 @@ const AuthPage = () => {
                   Email
                 </label>
                 <input
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   id="email"
                   type="email"
                   placeholder="nama@email.com"
@@ -99,6 +167,10 @@ const AuthPage = () => {
                 </label>
                 <div className="relative">
                   <input
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Emter password"
@@ -118,24 +190,33 @@ const AuthPage = () => {
                   </button>
                 </div>
               </div>
+              {errors && <p className="text-red-500">{errors.general}</p>}
               {!isLogin && (
                 <div className="flex itemx-center">
                   <input
+                    ref={termsCheckBoxRef}
                     id="terms"
                     type="checkbox"
                     className="w-4 h-4 text-indigo-600 border-gray-300 rounded"
                   />
                   <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                     I aggree to the{" "}
-                    <button className="text-blue-600 hover:underline">
+                    <button
+                      className="text-blue-600 hover:underline"
+                      onClick={() => setShowModal(!showModal)}
+                    >
                       Term and Privacy Policy
                     </button>
                   </label>
                 </div>
               )}
+              {errors.terms && <p className="text-red-500">{errors.terms}</p>}
               <button
+                disabled={loading}
                 type="submit"
-                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className={`w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 {isLogin ? "Sign In" : "Sign Up"}
               </button>
@@ -151,6 +232,7 @@ const AuthPage = () => {
                   <>
                     Don't have an account?{" "}
                     <button
+                      type="submit"
                       onClick={() => setType("register")}
                       className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors"
                     >
@@ -183,6 +265,18 @@ const AuthPage = () => {
           priority
         />
       </div>
+      {showModal && (
+        <Modal
+          type="information"
+          message="Terms and Privacy Policy"
+          onOk={() => {
+            setShowModal(false);
+            if (termsCheckBoxRef.current?.checked)
+              termsCheckBoxRef.current.checked = true;
+          }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

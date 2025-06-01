@@ -5,6 +5,7 @@ import { handleApiError } from "@/utils/handleApiError";
 
 export const login = async (userDataLogin: LoginData) => {
   try {
+    console.log(process.env.NEXT_APP_BASE_URL_V1);
     const response = await api.post("/auth/login", userDataLogin);
     return response.data;
   } catch (error) {
