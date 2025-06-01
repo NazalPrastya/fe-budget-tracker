@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { login, register } from "../../service/auth";
 import { DollarSign, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Modal from "@/ui/Modal";
-import { login, register } from "@/service/auth";
 
 const AuthPage = () => {
   const [type, setType] = useState<"login" | "register">("login");
