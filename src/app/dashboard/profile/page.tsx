@@ -9,12 +9,13 @@ import LoadingSpinnerScreen from "@/ui/LoadingSpinnerScreen";
 
 export default function Profilepage() {
   const [form, setForm] = useState({
-    id: 0,
+    uuid: "",
     name: "",
     email: "",
     number: "",
   });
 
+  console.log(form);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modal, setModal] = useState<ModalProps | null>(null);
@@ -62,7 +63,7 @@ export default function Profilepage() {
     setIsSubmitting(true);
 
     try {
-      const updated = await updateUser(form.id, {
+      const updated = await updateUser(form.uuid, {
         name: form.name,
         email: form.email,
         number: `+62${form.number}`,

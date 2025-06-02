@@ -35,9 +35,12 @@ export const createUser = async (data: Record<string, unknown>) => {
   }
 };
 
-export const updateUser = async (id: number, data: Record<string, unknown>) => {
+export const updateUser = async (
+  uuid: string,
+  data: Record<string, unknown>
+) => {
   try {
-    const res = await api.put(`/users/${id}`, data, {
+    const res = await api.put(`/users/${uuid}`, data, {
       headers: getTokenHeader(),
     });
     return res.data;
