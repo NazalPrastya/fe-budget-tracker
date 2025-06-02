@@ -10,7 +10,7 @@ import { TransactionFormData } from "@/interfaces/ITransaction";
 import { useEffect, useState } from "react";
 
 export default function EditTransactionPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
 
   const [initialData, setInitialData] = useState<TransactionFormData>();
@@ -20,7 +20,7 @@ export default function EditTransactionPage() {
 
   const loadTransaction = async () => {
     try {
-      const res = await fetchTransactionById(Number(id));
+      const res = await fetchTransactionById(Number(params?.id));
       const tx = res.data;
 
       setInitialData({
@@ -43,12 +43,12 @@ export default function EditTransactionPage() {
 
   useEffect(() => {
     loadTransaction();
-  }, [id]);
+  }, [params]);
 
   const handleSubmit = async (form: TransactionFormData) => {
     setIsSubmitting(true);
     try {
-      await editTransaction(Number(id), {
+      await editTransaction(Number(params?.id), {
         ...form,
       });
 
